@@ -111,6 +111,8 @@ export const useMask = (pattern: string) => {
     }
 }
 
+export const getDefaultContries: () => Readonly<CountryList> = () => defaultCountries
+
 export const usePhone = ({
                              query = "",
                              country = "",

@@ -89,6 +89,7 @@ export const useMask = (pattern) => {
         onKeyDown,
     };
 };
+export const getDefaultContries = () => defaultCountries;
 export const usePhone = ({ query = "", country = "", countryCode = "", initialValue = "", onlyCountries = [], excludeCountries = [], preferredCountries = [], disableParentheses = false, countries = defaultCountries }) => {
     var _a;
     const defaultValue = getRawValue(initialValue);
