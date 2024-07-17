@@ -14,13 +14,6 @@
     "validation"
   ],
   "homepage": "https://github.com/typesnippet/react-phone-hooks",
-  "bugs": {
-    "url": "https://github.com/typesnippet/react-phone-hooks/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/typesnippet/react-phone-hooks"
-  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -54,15 +47,10 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "index*",
-    "types*",
-    "styles*",
-    "locale*",
+    "dist",
     "LICENSE",
-    "metadata",
     "README.md",
-    "package.json",
-    "stylesheet.json"
+    "package.json"
   ],
   "scripts": {
     "build": "tsc --module commonjs && tsc --declaration",
