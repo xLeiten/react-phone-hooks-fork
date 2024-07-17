@@ -23,34 +23,34 @@
   },
   "exports": {
     ".": {
-      "import": "./index.js",
-      "require": "./index.cjs.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js",
       "types": {
-        "default": "./index.d.ts"
+        "default": "./dist/index.d.ts"
       }
     },
     "./types": {
-      "import": "./types.js",
-      "require": "./types.cjs.js",
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs.js",
       "types": {
-        "default": "./types.d.ts"
+        "default": "./dist/types.d.ts"
       }
     },
     "./styles": {
-      "import": "./styles.js",
-      "require": "./styles.cjs.js",
+      "import": "./dist/styles.js",
+      "require": "./dist/styles.cjs.js",
       "types": {
-        "default": "./styles.d.ts"
+        "default": "./dist/styles.d.ts"
       }
     },
     "./locale": {
-      "import": "./locale.js",
-      "require": "./locale.cjs.js",
+      "import": "./dist/locale.js",
+      "require": "./dist/locale.cjs.js",
       "types": {
-        "default": "./locale.d.ts"
+        "default": "./dist/locale.d.ts"
       }
     },
-    "./stylesheet.json": "./stylesheet.json",
+    "./stylesheet.json": "./dist/stylesheet.json",
     "./package.json": "./package.json"
   },
   "files": [
@@ -67,7 +67,7 @@
   "scripts": {
     "build": "tsc --module commonjs && tsc --declaration",
     "prebuild": "rmdir /s /q dist",
-    "postbuild": "move resources\\stylesheet.json dist\\stylesheet.json",
+    "postbuild": "copy resources\\stylesheet.json dist\\stylesheet.json",
     "test": "jest --config jestconfig.json"
   },
   "license": "MIT",
