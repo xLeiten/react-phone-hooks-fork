@@ -16,46 +16,51 @@
   "homepage": "https://github.com/typesnippet/react-phone-hooks",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs.js",
+      "import": "./index.js",
+      "require": "./index.cjs.js",
       "types": {
-        "default": "./dist/index.d.ts"
+        "default": "./index.d.ts"
       }
     },
     "./types": {
-      "import": "./dist/types.js",
-      "require": "./dist/types.cjs.js",
+      "import": "./types.js",
+      "require": "./types.cjs.js",
       "types": {
-        "default": "./dist/types.d.ts"
+        "default": "./types.d.ts"
       }
     },
     "./styles": {
-      "import": "./dist/styles.js",
-      "require": "./dist/styles.cjs.js",
+      "import": "./styles.js",
+      "require": "./styles.cjs.js",
       "types": {
-        "default": "./dist/styles.d.ts"
+        "default": "./styles.d.ts"
       }
     },
     "./locale": {
-      "import": "./dist/locale.js",
-      "require": "./dist/locale.cjs.js",
+      "import": "./locale.js",
+      "require": "./locale.cjs.js",
       "types": {
-        "default": "./dist/locale.d.ts"
+        "default": "./locale.d.ts"
       }
     },
-    "./stylesheet.json": "./dist/stylesheet.json",
+    "./stylesheet.json": "./stylesheet.json",
     "./package.json": "./package.json"
   },
   "files": [
-    "dist",
+    "index*",
+    "types*",
+    "styles*",
+    "locale*",
     "LICENSE",
+    "metadata",
     "README.md",
-    "package.json"
+    "package.json",
+    "stylesheet.json"
   ],
   "scripts": {
     "build": "tsc --module commonjs && tsc --declaration",
-    "prebuild": "rmdir /s /q dist",
-    "postbuild": "copy resources\\stylesheet.json dist\\stylesheet.json",
+    "prebuild": "del /q index* locale* stylesheet.json style* types* || exit 0",
+    "postbuild": "copy resources\\stylesheet.json stylesheet.json",
     "test": "jest --config jestconfig.json"
   },
   "license": "MIT",
