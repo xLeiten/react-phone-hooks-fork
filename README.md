@@ -1,3 +1,4 @@
+## !!Do not use!! The repository is used as an npm module for my other project
 # react-phone-hooks <img src="https://github.com/typesnippet.png" align="right" height="64" />
 
 [![npm](https://img.shields.io/npm/v/react-phone-hooks)](https://www.npmjs.com/package/react-phone-hooks)
