@@ -719,7 +719,12 @@ export declare const useMask: (pattern: string) => {
     onInput: ({ target }: ChangeEvent<HTMLInputElement>) => void;
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
-export declare const getDefaultContries: () => Readonly<CountryList>;
+export declare const getDefaultContries: () => {
+    iso: string;
+    name: string;
+    code: string;
+    mask: string;
+}[];
 export declare const usePhone: ({ query, country, countryCode, initialValue, onlyCountries, excludeCountries, preferredCountries, disableParentheses, countries }: usePhoneOptions) => {
     value: string;
     pattern: string;
