@@ -1,17 +1,17 @@
 "use client";
 import { useCallback, useMemo, useRef, useState } from "react";
-import countries from "./metadata/countries.json";
-import timezones from "./metadata/timezones.json";
-import validations from "./metadata/validations.json";
+import defaultCountries from "./metadata/countries.json";
+import defaultTimezones from "./metadata/timezones.json";
+import defaultValidations from "./metadata/validations.json";
 const slots = new Set(".");
-export const getMetadata = (rawValue, countriesList = countries, country = null) => {
+export const getMetadata = (rawValue, countriesList = defaultCountries, country = null) => {
     country = country == null && rawValue.startsWith("44") ? "gb" : country;
     if (country != null)
-        countriesList = countriesList.filter((c) => c[0] === country);
-    return [...countriesList].sort((a, b) => b[2].length - a[2].length).find((c) => rawValue.startsWith(c[2]));
+        countriesList = countriesList.filter((c) => c.iso === country);
+    return [...countriesList].sort((a, b) => b.code.length - a.code.length).find((c) => rawValue.startsWith(c.code));
 };
-export const getCountry = (countryCode) => {
-    return countries.find(([iso]) => iso === countryCode);
+export const getCountry = (countryCode, countries = defaultCountries) => {
+    return countries.find(({ iso }) => iso === countryCode);
 };
 export const getRawValue = (value) => {
     if (typeof value === "string")
@@ -29,22 +29,22 @@ export const cleanInput = (input, pattern) => {
 export const getFormattedNumber = (rawValue, pattern) => {
     var _a;
     /** Returns the reformatted input value based on the given pattern */
-    pattern = pattern || ((_a = getMetadata(rawValue)) === null || _a === void 0 ? void 0 : _a[3]) || "";
+    pattern = pattern || ((_a = getMetadata(rawValue)) === null || _a === void 0 ? void 0 : _a.mask) || "";
     return displayFormat(cleanInput(rawValue, pattern.replaceAll(/\d/g, ".")).join(""));
 };
-export const checkValidity = (metadata, strict = false) => {
+export const checkValidity = (metadata, strict = false, validations = defaultValidations) => {
     /** Checks if both the area code and phone number match the validation pattern */
     const pattern = validations[metadata.isoCode][Number(strict)];
     return new RegExp(pattern).test([metadata.areaCode, metadata.phoneNumber].filter(Boolean).join(""));
 };
-export const getDefaultISO2Code = () => {
+export const getDefaultISO2Code = (timezones = defaultTimezones) => {
     /** Returns the default ISO2 code, based on the user's timezone */
     return (timezones[Intl.DateTimeFormat().resolvedOptions().timeZone] || "") || "us";
 };
-export const parsePhoneNumber = (formattedNumber, countriesList = countries, country = null) => {
+export const parsePhoneNumber = (formattedNumber, countriesList = defaultCountries, country = null) => {
     var _a;
     const value = getRawValue(formattedNumber);
-    const isoCode = ((_a = getMetadata(value, countriesList, country)) === null || _a === void 0 ? void 0 : _a[0]) || getDefaultISO2Code();
+    const isoCode = ((_a = getMetadata(value, countriesList, country)) === null || _a === void 0 ? void 0 : _a.iso) || getDefaultISO2Code();
     const countryCodePattern = /\+\d+/;
     const areaCodePattern = /^\+\d+\s\(?(\d+)/;
     /** Parses the matching partials of the phone number by predefined regex patterns */
@@ -89,34 +89,34 @@ export const useMask = (pattern) => {
         onKeyDown,
     };
 };
-export const usePhone = ({ query = "", country = "", countryCode = "", initialValue = "", onlyCountries = [], excludeCountries = [], preferredCountries = [], disableParentheses = false, }) => {
+export const usePhone = ({ query = "", country = "", countryCode = "", initialValue = "", onlyCountries = [], excludeCountries = [], preferredCountries = [], disableParentheses = false, countries = defaultCountries }) => {
     var _a;
     const defaultValue = getRawValue(initialValue);
-    const defaultMetadata = getMetadata(defaultValue) || countries.find(([iso]) => iso === country);
-    const defaultValueState = defaultValue || ((_a = countries.find(([iso]) => iso === (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata[0]))) === null || _a === void 0 ? void 0 : _a[2]);
+    const defaultMetadata = getMetadata(defaultValue) || countries.find(({ iso }) => iso === country);
+    const defaultValueState = defaultValue || ((_a = countries.find(({ iso }) => iso === (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata.iso))) === null || _a === void 0 ? void 0 : _a.code);
     const [value, setValue] = useState(defaultValueState);
     const countriesOnly = useMemo(() => {
-        const allowList = onlyCountries.length > 0 ? onlyCountries : countries.map(([iso]) => iso);
-        return countries.filter(([iso, _1, dial]) => {
-            return (allowList.includes(iso) || allowList.includes(dial)) && !excludeCountries.includes(iso) && !excludeCountries.includes(dial);
+        const allowList = onlyCountries.length > 0 ? onlyCountries : countries.map(({ iso }) => iso);
+        return countries.filter(({ iso, code }) => {
+            return (allowList.includes(iso) || allowList.includes(code)) && !excludeCountries.includes(iso) && !excludeCountries.includes(code);
         });
     }, [onlyCountries, excludeCountries]);
     const countriesList = useMemo(() => {
-        const filteredCountries = countriesOnly.filter(([_1, name, dial, mask]) => (name.toLowerCase().startsWith(query.toLowerCase()) || dial.includes(query) || mask.includes(query)));
+        const filteredCountries = countriesOnly.filter(({ name, code, mask }) => (name.toLowerCase().startsWith(query.toLowerCase()) || code.includes(query) || mask.includes(query)));
         return [
-            ...filteredCountries.filter(([iso]) => preferredCountries.includes(iso)),
-            ...filteredCountries.filter(([iso]) => !preferredCountries.includes(iso)),
+            ...filteredCountries.filter(({ iso }) => preferredCountries.includes(iso)),
+            ...filteredCountries.filter(({ iso }) => !preferredCountries.includes(iso)),
         ];
     }, [countriesOnly, preferredCountries, query]);
     const metadata = useMemo(() => {
         const calculatedMetadata = getMetadata(getRawValue(value), countriesList, countryCode);
-        if (countriesList.find(([iso]) => iso === (calculatedMetadata === null || calculatedMetadata === void 0 ? void 0 : calculatedMetadata[0]) || iso === (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata[0]))) {
+        if (countriesList.find(({ iso }) => iso === (calculatedMetadata === null || calculatedMetadata === void 0 ? void 0 : calculatedMetadata.iso) || iso === (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata.iso))) {
             return calculatedMetadata || defaultMetadata;
         }
         return countriesList[0];
     }, [countriesList, countryCode, defaultMetadata, value]);
     const pattern = useMemo(() => {
-        const mask = (metadata === null || metadata === void 0 ? void 0 : metadata[3]) || (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata[3]) || "";
+        const mask = (metadata === null || metadata === void 0 ? void 0 : metadata.mask) || (defaultMetadata === null || defaultMetadata === void 0 ? void 0 : defaultMetadata.mask) || "";
         return disableParentheses ? mask.replace(/[()]/g, "") : mask;
     }, [disableParentheses, defaultMetadata, metadata]);
     return {
