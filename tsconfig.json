@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "ignoreDeprecations": "5.0",
     "resolveJsonModule": true,
-    "outDir": ".",
+    "outDir": "dist",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "lib": [

@@ -2,6 +2,7 @@
   "version": "0.1.7",
   "name": "react-phone-hooks",
   "description": "React hooks and utility functions for parsing and validating phone numbers.",
+  "private": true,
   "keywords": [
     "react",
     "phone",
@@ -64,10 +65,9 @@
     "stylesheet.json"
   ],
   "scripts": {
-    "rename": "bash -c 'for file in *.js; do mv $file \"${file%.js}.$0.js\"; done'",
-    "build": "tsc --module commonjs && npm run rename -- cjs && tsc --declaration",
-    "prebuild": "rm -r metadata stylesheet.json index* locale* types* styles* || true",
-    "postbuild": "cp resources/stylesheet.json stylesheet.json",
+    "build": "tsc --module commonjs && tsc --declaration",
+    "prebuild": "rmdir /s /q dist",
+    "postbuild": "move resources\\stylesheet.json dist\\stylesheet.json",
     "test": "jest --config jestconfig.json"
   },
   "license": "MIT",
