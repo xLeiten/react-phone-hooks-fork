@@ -6,8 +6,9 @@ describe("Verifying the basic functionality", () => {
     it("Check the basic back-forward utilities", () => {
         const rawValue = "17021234567";
         const metadata = getMetadata(rawValue);
+        console.log(metadata)
 
-        const formattedNumber = getFormattedNumber(rawValue, (metadata as any)[3]);
+        const formattedNumber = getFormattedNumber(rawValue, (metadata as any).mask);
         const formattedNumberWithoutParentheses = formattedNumber.replace(/[()]/g, "");
         const formattedNumberOverloaded = getFormattedNumber(rawValue);
         const parsedPhoneNumber = parsePhoneNumber(formattedNumber);
@@ -39,17 +40,17 @@ describe("Verifying the basic functionality", () => {
     it("Check the order accuracy of getMetadata result", () => {
         const bqMetadata = getMetadata("5990651111");
         const cwMetadata = getMetadata("5997171111", undefined, "cw");
-        assert(bqMetadata !== null && (bqMetadata as any)[0] === "bq");
-        assert(cwMetadata !== null && (cwMetadata as any)[0] === "cw");
+        assert(bqMetadata !== null && (bqMetadata as any).iso === "bq");
+        assert(cwMetadata !== null && (cwMetadata as any).iso === "cw");
 
         const gbMetadata = getMetadata("440201111111");
         const jeMetadata = getMetadata("447797111111", undefined, "je");
-        assert(gbMetadata !== null && (gbMetadata as any)[0] === "gb");
-        assert(jeMetadata !== null && (jeMetadata as any)[0] === "je");
+        assert(gbMetadata !== null && (gbMetadata as any).iso === "gb");
+        assert(jeMetadata !== null && (jeMetadata as any).iso === "je");
 
         const itMetadata = getMetadata("39310111111111");
         const vaMetadata = getMetadata("39066981111111", undefined, "va");
-        assert(itMetadata !== null && (itMetadata as any)[0] === "it");
-        assert(vaMetadata !== null && (vaMetadata as any)[0] === "va");
+        assert(itMetadata !== null && (itMetadata as any).iso === "it");
+        assert(vaMetadata !== null && (vaMetadata as any).iso === "va");
     })
 })

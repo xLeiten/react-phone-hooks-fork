@@ -18,4 +18,8 @@ export interface usePhoneOptions {
     preferredCountries?: string[];
     disableParentheses?: boolean;
     initialValue?: PhoneNumber | string;
+    countries?: CountryList
 }
+
+export type CountryList = { name: string, iso: string, code: string, mask: string}[]
+export type Country = CountryList[number]

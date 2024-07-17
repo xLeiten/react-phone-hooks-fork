@@ -52,7 +52,7 @@ const usePhoneTester = ({
     const search = useCallback(setQuery, []);
 
     const select = useCallback((isoCode: string) => {
-        const pattern = (countriesList.find(([iso]) => iso === isoCode) as any)[3];
+        const pattern = (countriesList.find(({ iso }) => iso === isoCode) as any).mask;
         const mask = disableParentheses ? pattern.replace(/[()]/g, "") : pattern;
         setValue(displayFormat(cleanInput(mask, mask).join("")));
         setCountryCode(isoCode);
@@ -62,8 +62,8 @@ const usePhoneTester = ({
         if (initiatedRef.current) return;
         initiatedRef.current = true;
         let initialValue = getRawValue(value);
-        if (!initialValue.startsWith(metadata?.[2] as string)) {
-            initialValue = metadata?.[2] as string;
+        if (!initialValue.startsWith(metadata?.code as string)) {
+            initialValue = metadata?.code as string;
         }
         const formattedNumber = getFormattedNumber(initialValue, pattern);
         const phoneMetadata = parsePhoneNumber(formattedNumber, countriesList);
@@ -86,13 +86,13 @@ describe("Verifying the functionality of hooks", () => {
             }
         });
         expect(result.current.value).toBe("+374 (11) 111 111");
-        expect((result.current.metadata as any)[0]).toBe("am");
+        expect((result.current.metadata as any).iso).toBe("am");
 
         act(() => result.current.update("1"));
         act(() => result.current.update("1111"));
 
         expect(result.current.value).toBe("+1 (111)");
-        expect((result.current.metadata as any)[0]).toBe("us");
+        expect((result.current.metadata as any).iso).toBe("us");
     })
 
     it("Check usePhone for country code update", () => {
@@ -102,12 +102,12 @@ describe("Verifying the functionality of hooks", () => {
             }
         });
         expect(result.current.value).toBe("+1 (702) 123 4567");
-        expect((result.current.metadata as any)[0]).toBe("us");
+        expect((result.current.metadata as any).iso).toBe("us");
 
         act(() => result.current.select("ua"));
 
         expect(result.current.value).toBe("+380");
-        expect((result.current.metadata as any)[0]).toBe("ua");
+        expect((result.current.metadata as any).iso).toBe("ua");
     })
 
     it("Check usePhone for searching a country", () => {
@@ -119,9 +119,9 @@ describe("Verifying the functionality of hooks", () => {
 
         expect(result.current.countriesList).toHaveLength(1);
 
-        act(() => result.current.select(result.current.countriesList[0][0]));
+        act(() => result.current.select(result.current.countriesList[0].iso));
 
-        expect((result.current.metadata as any)[0]).toBe("am");
+        expect((result.current.metadata as any).iso).toBe("am");
     })
 
     it("Check usePhone for advanced country filtering", () => {
@@ -132,13 +132,13 @@ describe("Verifying the functionality of hooks", () => {
             }
         });
 
-        expect(result.current.countriesList.map(c => c[2]).includes("1"));
-        expect(result.current.countriesList.map(c => c[2]).includes("44"));
-        expect(result.current.countriesList.map(c => c[2]).includes("971"));
+        expect(result.current.countriesList.map(c => c.code).includes("1"));
+        expect(result.current.countriesList.map(c => c.code).includes("44"));
+        expect(result.current.countriesList.map(c => c.code).includes("971"));
 
-        expect(!result.current.countriesList.map(c => c[2]).includes("1907"));
-        expect(!result.current.countriesList.map(c => c[2]).includes("1205"));
-        expect(!result.current.countriesList.map(c => c[2]).includes("1251"));
+        expect(!result.current.countriesList.map(c => c.code).includes("1907"));
+        expect(!result.current.countriesList.map(c => c.code).includes("1205"));
+        expect(!result.current.countriesList.map(c => c.code).includes("1251"));
     })
 
     it("Check usePhone without parentheses", () => {
@@ -152,7 +152,7 @@ describe("Verifying the functionality of hooks", () => {
         act(() => result.current.update("6104111"));
 
         expect(result.current.value).toBe("+61 0 4111");
-        expect((result.current.metadata as any)[0]).toBe("au");
+        expect((result.current.metadata as any).iso).toBe("au");
 
         act(() => result.current.select("ms"));
 
@@ -166,15 +166,15 @@ describe("Verifying the functionality of hooks", () => {
 
         act(() => result.current.update("1"));
 
-        expect((result.current.metadata as any)[0]).toBe("us");
+        expect((result.current.metadata as any).iso).toBe("us");
 
         act(() => result.current.update("1204"));
 
-        expect((result.current.metadata as any)[0]).toBe("ca");
+        expect((result.current.metadata as any).iso).toBe("ca");
 
         act(() => result.current.backspace());
 
-        expect((result.current.metadata as any)[0]).toBe("us");
+        expect((result.current.metadata as any).iso).toBe("us");
     })
 
     it("Check useMask for basic use case", async () => {
